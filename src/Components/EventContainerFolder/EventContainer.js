@@ -78,7 +78,7 @@ function EventContainer() {
     <div className="App">
       <br />
       <div className="rightalign">
-        <button className="btn btn-success green" onClick={() => abrirModalInsertar()}>Insertar</button>
+        <button className="btn btn-success green" onClick={() => abrirModalInsertar()}>Crear Evento</button>
       </div>
       <table className="table table-bordered">
         <thead>
@@ -97,16 +97,16 @@ function EventContainer() {
         <tbody className='table'>
           {eventlist.map(elemento => (
             <tr>
-              <td>{elemento.id}</td>
-              <td>{elemento.nombre}</td>
-              <td>{elemento.descripcion}</td>
-              <td>{elemento.inicio}</td>
-              <td>{elemento.fin}</td>
-              <td>{elemento.boletos}</td>
-              <td><img className="tableimage" src={elemento.fotografia} alt="Responsive image" /></td>
-              <td>{elemento.ubicacion}</td>
-              <td><button className="btn btn-outline-success" onClick={() => seleccionarEvento(elemento, 'Editar')}>Editar</button> {"   "}
-                <button className="btn btn-outline-danger" onClick={() => seleccionarEvento(elemento, 'Eliminar')}>Eliminar</button></td>
+                <td>{elemento.id}</td>
+                <td>{elemento.nombre}</td>
+                <td>{elemento.descripcion}</td>
+                <td>{elemento.inicio}</td>
+                <td>{elemento.fin}</td>
+                <td>{elemento.boletos}</td>
+                <td><img className="tableimage" src={elemento.fotografia} alt="Responsive image" /></td>
+                <td>{elemento.ubicacion}</td>
+                <td><button className="btn btn-success" onClick={() => seleccionarEvento(elemento, 'Editar')}>Editar</button> {"   "}
+                <button className="btn btn-danger" onClick={() => seleccionarEvento(elemento, 'Eliminar')}>Eliminar</button></td>
             </tr>
           ))
           }
@@ -303,7 +303,7 @@ function EventContainer() {
             />
             <br />
 
-            <label>Fotografia</label>
+            <label>Fotografia (URL)</label>
             <input
               className="form-control"
               type="text"
