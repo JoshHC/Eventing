@@ -1,10 +1,42 @@
 .App {
   text-align: center;
+  vertical-align: middle;
+}
+
+.tableimage {
+height: 50px;
+width: 100px;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.table {
+  margin: auto;
+  vertical-align: center;
+}
+
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.rightalign {
+  text-align: right;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+
+.selectedright {
+  transform: translateX(560px)  
+}
+
+
+.selectedcenter {
+  transform: translateX(50px)  
 }
 
 @media (prefers-reduced-motion: no-preference) {

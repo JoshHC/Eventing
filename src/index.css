@@ -5,6 +5,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url("https://www.recyclehonduras.com/wp-content/uploads/2017/04/green-wordpress-theme-orionthemes-2.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 code {
