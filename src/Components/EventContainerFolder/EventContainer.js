@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import EventTable from '../EventTableFolder/EventTable';
+import axios from 'axios';
+
+
+sessionStorage.getItem('UserToken');
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTk4MDM4MzgsImV4cCI6MTYxOTgwNzQzOH0.4D9I9S6DaF0PyKAk0plwRS1hQ6yXd7Bw51egF6Torbo'
+}
 
 
 function EventContainer() {
@@ -37,27 +45,26 @@ function EventContainer() {
     }));
   }
 
-  const editar = () => {
-    eventlist.map(evento => {
-      if (evento.id === eventoSeleccionado.id) {
-        evento.nombre = eventoSeleccionado.nombre;
-        evento.descripcion = eventoSeleccionado.descripcion;
-        evento.inicio = eventoSeleccionado.inicio;
-        evento.fin = eventoSeleccionado.fin;
-        evento.boletos = eventoSeleccionado.boletos;
-        evento.fotografia = eventoSeleccionado.fotografia;
-        evento.ubicacion = eventoSeleccionado.ubicacion;
-      }
-    });
-    localStorage.setItem('EventData', JSON.stringify(eventlist));
+  const editar = async () => {
+    console.log("Editar")
+    const params = {
+      id: eventoSeleccionado.id,
+      nombre: eventoSeleccionado.nombre,
+      descripcion: eventoSeleccionado.descripcion,
+      inicio: eventoSeleccionado.inicio,
+      fin: eventoSeleccionado.fin,
+      boletos: eventoSeleccionado.boletos,
+      fotografia: eventoSeleccionado.fotografia,
+      ubicacion: eventoSeleccionado.ubicacion
+    }
+    await axios.patch(process.env.REACT_APP_EVENTS + eventoSeleccionado.id, params, {headers});
     setModalEditar(false);
   }
 
-  const eliminar = () => {
+  const eliminar = async () => {
     setModalEliminar(false);
-    const neweventlist = eventlist.filter(evento => evento.id !== eventoSeleccionado.id);
-    localStorage.setItem('EventData', JSON.stringify(neweventlist));
-    setData(neweventlist);
+    console.log(eventoSeleccionado.id);
+    await axios.delete(process.env.REACT_APP_EVENTS + eventoSeleccionado.id, {headers});
   }
 
   const abrirModalInsertar = () => {
@@ -65,14 +72,30 @@ function EventContainer() {
     setModalInsertar(true);
   }
 
-  const insertar = () => {
-    var valorInsertar = eventoSeleccionado;
-    valorInsertar.id = eventlist[eventlist.length - 1].id + 1;
-    eventlist.push(valorInsertar);
-    setData(eventlist);
-    localStorage.setItem('EventData', JSON.stringify(eventlist));
+  const insertar = async () => {
+    const params = {
+      id: eventoSeleccionado.id,
+      nombre: eventoSeleccionado.nombre,
+      descripcion: eventoSeleccionado.descripcion,
+      inicio: eventoSeleccionado.inicio,
+      fin: eventoSeleccionado.fin,
+      boletos: eventoSeleccionado.boletos,
+      fotografia: eventoSeleccionado.fotografia,
+      ubicacion: eventoSeleccionado.ubicacion
+    }
+    await axios.post(process.env.REACT_APP_EVENTS, params, {headers})
     setModalInsertar(false);
   }
+
+  const [EventList, setEventList] = useState([]);
+  useEffect(async () => {
+    try {
+      const res = await axios.get(process.env.REACT_APP_EVENTS, { headers })
+      setEventList(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
   return (
     <div className="App">
@@ -95,17 +118,17 @@ function EventContainer() {
           </tr>
         </thead>
         <tbody className='table'>
-          {eventlist.map(elemento => (
-            <tr>
-                <td>{elemento.id}</td>
-                <td>{elemento.nombre}</td>
-                <td>{elemento.descripcion}</td>
-                <td>{elemento.inicio}</td>
-                <td>{elemento.fin}</td>
-                <td>{elemento.boletos}</td>
-                <td><img className="tableimage" src={elemento.fotografia} alt="Responsive image" /></td>
-                <td>{elemento.ubicacion}</td>
-                <td><button className="btn btn-success" onClick={() => seleccionarEvento(elemento, 'Editar')}>Editar</button> {"   "}
+          {EventList.map((elemento, i) => (
+            <tr key={i}>
+              <td>{elemento.id}</td>
+              <td>{elemento.nombre}</td>
+              <td>{elemento.descripcion}</td>
+              <td>{elemento.inicio}</td>
+              <td>{elemento.fin}</td>
+              <td>{elemento.boletos}</td>
+              <td><img className="tableimage" src={elemento.fotografia} alt="Responsive image" /></td>
+              <td>{elemento.ubicacion}</td>
+              <td><button className="btn btn-primary" onClick={() => seleccionarEvento(elemento, 'Editar')}>Editar</button> {"   "}
                 <button className="btn btn-danger" onClick={() => seleccionarEvento(elemento, 'Eliminar')}>Eliminar</button></td>
             </tr>
           ))
