@@ -1,8 +1,11 @@
 import React, { Component, useState } from "react";
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 
 function LoginContainer() {
+
+    const history = useHistory();
 
     const [email, setemail] = useState('');
 
@@ -20,6 +23,7 @@ function LoginContainer() {
         try {
             const res = await axios.post(process.env.REACT_APP_LOGIN, params, headers)
             sessionStorage.setItem('UserToken', res.data.token);
+            history.push("/index");
         }
         catch (error) {
             console.log(error);
@@ -29,13 +33,11 @@ function LoginContainer() {
 
     const handleChangeemail = e => {
         const email = e.target.value;
-        console.log(email);
         setemail(email);
     }
 
     const handleChangepassword = e => {
         const password = e.target.value;
-        console.log(password);
         setpassword(password);
     }
 

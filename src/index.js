@@ -11,6 +11,15 @@ import Login from './Components/Login/Login';
 ReactDOM.render(
   <React.StrictMode>
     <Login/>
+    <Router>
+      <switch>
+        <Route exact path="/login" component={Login}></Route>
+        <Route exact path="/index">
+          <Navbar />
+          <App />
+        </Route>
+      </switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

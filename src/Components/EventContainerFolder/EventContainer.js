@@ -5,12 +5,10 @@ import EventTable from '../EventTableFolder/EventTable';
 import axios from 'axios';
 
 
-sessionStorage.getItem('UserToken');
 const headers = {
   'Content-Type': 'application/json',
-  'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTk4MDM4MzgsImV4cCI6MTYxOTgwNzQzOH0.4D9I9S6DaF0PyKAk0plwRS1hQ6yXd7Bw51egF6Torbo'
+  'Authorization': 'Bearer '+ sessionStorage.getItem('UserToken')
 }
-
 
 function EventContainer() {
 
