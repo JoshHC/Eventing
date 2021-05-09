@@ -1,6 +1,7 @@
 import React, { Component, useState } from "react";
 import axios from 'axios';
 import { useHistory } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 
 function LoginContainer() {
@@ -17,15 +18,23 @@ function LoginContainer() {
 
     const login = async () => {
         const params = {
-            username: email, 
+            username: email,
             password
         }
         try {
             const res = await axios.post(process.env.REACT_APP_LOGIN, params, headers)
+            console.log(res);
             sessionStorage.setItem('UserToken', res.data.token);
             history.push("/index");
         }
         catch (error) {
+            Swal.fire({
+            icon: 'error',
+            title: 'Acceso Denegado',
+            text: 'Contraseña o Usuario Incorrectos'
+          })
+          setemail("");
+          setpassword("");
             console.log(error);
         }
 
@@ -42,16 +51,16 @@ function LoginContainer() {
     }
 
     return (
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 min-vh-100 d-flex flex-column justify-content-center">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-8 mx-auto">
-                            <div class="card rounded shadow shadow-sm">
-                                <div class="card-header">
-                                    <h3 class="mb-0">Login</h3>
+        <div className="container">
+            <div className="row">
+                <div className="col-md-12 min-vh-100 d-flex flex-column justify-content-center">
+                    <div className="row">
+                        <div className="col-lg-6 col-md-8 mx-auto">
+                            <div className="card rounded shadow shadow-sm">
+                                <div className="card-header">
+                                    <img src="images/LoginLogo.png" className="rounded mx-auto d-block" classwidth='100' height='100'/>
                                 </div>
-                                <div class="card-body">
+                                <div className="card-body">
                                     <div className="form-group">
                                         <label>Email</label>
                                         <input type="email" className="form-control" placeholder="Enter email"

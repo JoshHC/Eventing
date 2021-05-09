@@ -17,7 +17,6 @@ function ValidateLocalStorage() {
 }
 
 function App() {
-  ValidateLocalStorage();
   return (
     <div>
       <EventContainer />

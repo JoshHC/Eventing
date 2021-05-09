@@ -92,3 +92,12 @@ body, html, .App, #root, .outer {
 .forgot-password a {
   color: #167bff;
 }
+
+.selectedright{
+  margin-left: 40px;
+}
+
+.page-footer
+{
+  background-color: #f1f1f1f8;
+}

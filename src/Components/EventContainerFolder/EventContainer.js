@@ -3,16 +3,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import EventTable from '../EventTableFolder/EventTable';
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
+import Swal from 'sweetalert2'
 
-
-const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': 'Bearer '+ sessionStorage.getItem('UserToken')
-}
 
 function EventContainer() {
 
-  var [eventlist, setData] = useState(JSON.parse(localStorage.getItem('EventData')));
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ' + sessionStorage.getItem('UserToken')
+  }
+
+  let history = useHistory();
 
   //Creación de las vistas modales
   const [modalEditar, setModalEditar] = useState(false);
@@ -55,14 +57,21 @@ function EventContainer() {
       fotografia: eventoSeleccionado.fotografia,
       ubicacion: eventoSeleccionado.ubicacion
     }
-    await axios.patch(process.env.REACT_APP_EVENTS + eventoSeleccionado.id, params, {headers});
+    const res = await axios.patch(process.env.REACT_APP_EVENTS + eventoSeleccionado.id, params, { headers });
+    console.log(res);
+    const resget = await axios.get(process.env.REACT_APP_EVENTS, { headers })
+    setEventList(resget.data);
     setModalEditar(false);
   }
 
   const eliminar = async () => {
-    setModalEliminar(false);
     console.log(eventoSeleccionado.id);
-    await axios.delete(process.env.REACT_APP_EVENTS + eventoSeleccionado.id, {headers});
+    console.log(headers);
+    const res = await axios.delete(process.env.REACT_APP_EVENTS + eventoSeleccionado.id, { headers });
+    console.log(res);
+    EventList.pop(eventoSeleccionado);
+    setEventList(EventList);
+    setModalEliminar(false);
   }
 
   const abrirModalInsertar = () => {
@@ -81,19 +90,37 @@ function EventContainer() {
       fotografia: eventoSeleccionado.fotografia,
       ubicacion: eventoSeleccionado.ubicacion
     }
-    await axios.post(process.env.REACT_APP_EVENTS, params, {headers})
+    const res = await axios.post(process.env.REACT_APP_EVENTS, params, { headers })
+    EventList.push(params);
+    setEventList(EventList);
+    console.log(res);
     setModalInsertar(false);
   }
 
   const [EventList, setEventList] = useState([]);
   useEffect(async () => {
-    try {
-      const res = await axios.get(process.env.REACT_APP_EVENTS, { headers })
-      setEventList(res.data);
-    } catch (error) {
-      console.log(error);
+    console.log(sessionStorage.getItem('UserToken'))
+    if (sessionStorage.getItem('UserToken') != null) {
+      try {
+        const res = await axios.get(process.env.REACT_APP_EVENTS, { headers })
+        console.log(res);
+        console.log(headers);
+        setEventList(res.data);
+      } catch (error) {
+        console.log(headers);
+        console.log(error);
+      }
     }
-  });
+    else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Acceso Denegado',
+        text: 'No puede acceder al menú principal sin haberse autenticado',
+        footer: '<a href>Auntentiquese para continuar</a>'
+      })
+      history.push("/login");
+    }
+  }, []);
 
   return (
     <div className="App">
@@ -101,38 +128,40 @@ function EventContainer() {
       <div className="rightalign">
         <button className="btn btn-success green" onClick={() => abrirModalInsertar()}>Crear Evento</button>
       </div>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Descripcion</th>
-            <th>Inicio</th>
-            <th>Fin</th>
-            <th>Boletos</th>
-            <th>Fotografia</th>
-            <th>Ubicacion</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody className='table'>
-          {EventList.map((elemento, i) => (
-            <tr key={i}>
-              <td>{elemento.id}</td>
-              <td>{elemento.nombre}</td>
-              <td>{elemento.descripcion}</td>
-              <td>{elemento.inicio}</td>
-              <td>{elemento.fin}</td>
-              <td>{elemento.boletos}</td>
-              <td><img className="tableimage" src={elemento.fotografia} alt="Responsive image" /></td>
-              <td>{elemento.ubicacion}</td>
-              <td><button className="btn btn-primary" onClick={() => seleccionarEvento(elemento, 'Editar')}>Editar</button> {"   "}
-                <button className="btn btn-danger" onClick={() => seleccionarEvento(elemento, 'Eliminar')}>Eliminar</button></td>
-            </tr>
-          ))
-          }
-        </tbody>
-      </table>
+      <div className='separator'>
+        <div className="card rounded shadow shadow-sm">
+          <div className="card-header">
+            <h3 className="mb-0">Eventos</h3>
+          </div>
+          <div className='container-fluid'>
+            <div className="row">
+              {EventList.map((elemento, i) => (
+                <div key = {i} className="col-md-4">
+                  <div className="card mb-4 box-shadow h-100">
+                    <img className="card-img-top" src={elemento.fotografia} alt="Responsive image" />
+                    <div className="card-body">
+                      <h5 className="card-title">{elemento.nombre}</h5>
+                      <p className="card-text">{elemento.descripcion}</p>
+                      <button className="btn btn-success" onClick={() => seleccionarEvento(elemento, 'Editar')}>Editar</button> {"   "}
+                      <button className="btn btn-danger" onClick={() => seleccionarEvento(elemento, 'Eliminar')}>Eliminar</button>
+                    </div>
+                    <ul className="list-group list-group-flush">
+                      <li className="list-group-item">Boletos: {elemento.boletos}</li>
+                      <li className="list-group-item">Ubicación: {elemento.ubicacion}</li>
+                    </ul>
+                    <div className="card-footer text-muted">Inicio: {elemento.inicio}
+                      <br />
+                    Fin: {elemento.fin}
+                    </div>
+                  </div>
+                  <br></br>
+                </div>
+              ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
 
       <Modal isOpen={modalEditar}>
         <ModalHeader>
@@ -270,7 +299,7 @@ function EventContainer() {
               readOnly
               type="text"
               name="id"
-              value={eventlist[eventlist.length - 1].id + 1}
+              value={[EventList.length] + 1}
             />
             <br />
 
@@ -359,7 +388,7 @@ function EventContainer() {
           </button>
         </ModalFooter>
       </Modal>
-    </div>
+    </div >
   );
 }
 

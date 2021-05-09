@@ -2,8 +2,11 @@ import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import EventContainer from '../EventContainerFolder/EventContainer.js';
 import { abrirModalInsertar } from '../EventContainerFolder/EventContainer.js';
+import { useHistory } from "react-router-dom";
+
 
 function Navbar() {
+  let history = useHistory();
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <a className="navbar-brand" href="#">
@@ -15,10 +18,10 @@ function Navbar() {
 
       <div className="collapse navbar-collapse" id="navbarSupportedContent">
         <ul className="navbar-nav mr-auto">
-          <li className="nav-item active">
-            <a className="nav-link" href="#">Inicio <span className="sr-only">(current)</span></a>
-          </li>
           <li className="nav-item">
+            <a className="nav-link" href="#">Inicio<span className="sr-only">(current)</span></a>
+          </li>
+          <li className="nav-item active">
             <a className="nav-link" href="#">Mis Eventos</a>
           </li>
           <li className="nav-item dropdown">
@@ -39,12 +42,19 @@ function Navbar() {
             </form>
           </li>
           <li className="selectedright">
-            <a className="nav-link disabled" href="#">Iniciar Sesión</a>
+            <a className="nav-link" href="/login" onClick={LogOut}>Cerrar Sesión</a>
           </li>
         </ul>
       </div>
     </nav>
   )
+
+  function LogOut(event) {
+    event.preventDefault();
+    sessionStorage.removeItem('UserToken');
+    history.push("/login");
+  }
 }
+
 
 export default Navbar;

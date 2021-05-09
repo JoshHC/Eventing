@@ -13,20 +13,30 @@ width: 100px;
   pointer-events: none;
 }
 
+th {
+  background-color: #4CAF50;
+  color: white;
+}
+
 .table {
   margin: auto;
   vertical-align: center;
 }
 
-th {
-  background-color: #4CAF50;
-  color: white;
+.card-columns {
+  @include media-breakpoint-only(lg) {
+    column-count: 3;
+  }
 }
 
 .rightalign {
   text-align: right;
   margin-right: 20px;
   margin-bottom: 20px;
+}
+
+.content-loader tr td {
+  white-space: nowrap;
 }
 
 
@@ -67,4 +77,21 @@ th {
   to {
     transform: rotate(360deg);
   }
+}
+
+.card {
+      display: block;
+      width: 100%;
+      margin-bottom: 100px;
+}
+
+
+.col-md-4 {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+.separator {
+  margin-left: 10px;
+  margin-right: 10px;
 }
